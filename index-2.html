@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BiocharX — Carbon Kinetix Technology</title>
+<meta name="description" content="Advanced biochar technology for sustainable agriculture and carbon sequestration. Carbon Kinetix Technology, Jalandhar, Punjab, India.">
+<meta name="keywords" content="biochar, carbon sequestration, sustainable agriculture, soil health, Punjab, Carbon Kinetix Technology">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Lora:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#060a07;
+  --bg2:#0a0f0b;
+  --green:#00e676;
+  --green2:#1db954;
+  --green-dim:#0a2e18;
+  --amber:#ff9d00;
+  --red:#ff4500;
+  --white:#eef4ef;
+  --gray:#7a9480;
+  --charcoal:#101510;
+  --border:rgba(255,255,255,0.06);
+  --fh:'Syne',sans-serif;
+  --fb:'Lora',serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--white);font-family:var(--fb);overflow-x:hidden;cursor:none}
+
+/* CUSTOM CURSOR */
+.cursor{position:fixed;z-index:9999;pointer-events:none;mix-blend-mode:difference}
+.cursor-dot{width:6px;height:6px;background:var(--green);border-radius:50%;position:fixed;transform:translate(-50%,-50%);transition:transform .1s}
+.cursor-ring{width:32px;height:32px;border:1px solid rgba(0,230,118,0.5);border-radius:50%;position:fixed;transform:translate(-50%,-50%);transition:transform .15s,width .2s,height .2s,opacity .2s}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:1.2rem 4rem;display:flex;align-items:center;justify-content:space-between;transition:all .4s}
+nav.scrolled{background:rgba(6,10,7,0.92);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--border)}
+.nav-logo{font-family:var(--fh);font-size:1.4rem;font-weight:800;color:var(--green);letter-spacing:.05em;text-decoration:none}
+.nav-logo span{color:var(--white)}
+.nav-links{display:flex;gap:2.5rem;list-style:none}
+.nav-links a{color:var(--gray);text-decoration:none;font-family:var(--fh);font-size:.78rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;transition:color .3s}
+.nav-links a:hover{color:var(--green)}
+.nav-cta{background:var(--green)!important;color:var(--bg)!important;padding:.45rem 1.1rem;border-radius:3px}
+.nav-cta:hover{background:var(--green2)!important}
+
+/* HERO */
+#hero{position:relative;height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
+#hero-canvas{position:absolute;inset:0;z-index:0}
+.hero-content{position:relative;z-index:10;text-align:center;max-width:940px;padding:2rem}
+.hero-eyebrow{font-family:var(--fh);font-size:.7rem;font-weight:700;letter-spacing:.35em;text-transform:uppercase;color:var(--green);margin-bottom:1.5rem;opacity:0;transform:translateY(20px)}
+.hero-title{font-family:var(--fh);font-size:clamp(2.8rem,7vw,6rem);font-weight:800;line-height:1.03;letter-spacing:-.025em;margin-bottom:1.5rem;opacity:0;transform:translateY(30px)}
+.hero-title em{font-style:italic;color:var(--green);font-family:var(--fb)}
+.hero-sub{font-size:1.05rem;color:var(--gray);line-height:1.75;max-width:580px;margin:0 auto 2.5rem;opacity:0;transform:translateY(20px)}
+.hero-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;opacity:0;transform:translateY(20px)}
+.hero-badge{position:absolute;bottom:6rem;left:4rem;opacity:0;z-index:10}
+.hero-badge-inner{border:1px solid rgba(0,230,118,.2);padding:.8rem 1.2rem;background:rgba(0,230,118,.04);backdrop-filter:blur(10px)}
+.hero-badge-inner p{font-family:var(--fh);font-size:.65rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--green);margin-bottom:.2rem}
+.hero-badge-inner span{font-size:.8rem;color:var(--gray)}
+
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:.5rem;z-index:10;opacity:.6}
+.scroll-hint span{font-family:var(--fh);font-size:.6rem;letter-spacing:.25em;text-transform:uppercase;color:var(--gray)}
+.scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,var(--green),transparent);animation:spulse 1.6s ease-in-out infinite}
+@keyframes spulse{0%,100%{opacity:.3;transform:scaleY(1) translateY(0)}50%{opacity:1;transform:scaleY(.7) translateY(5px)}}
+
+/* BUTTONS */
+.btn{display:inline-block;font-family:var(--fh);font-weight:700;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;cursor:none;transition:transform .2s,background .3s}
+.btn:hover{transform:translateY(-2px)}
+.btn-p{background:var(--green);color:var(--bg);padding:.85rem 2.2rem;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))}
+.btn-p:hover{background:var(--green2)}
+.btn-o{border:1px solid rgba(0,230,118,.35);color:var(--green);padding:.85rem 2.2rem;background:transparent;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))}
+.btn-o:hover{background:rgba(0,230,118,.08)}
+
+/* SHARED SECTION */
+.sec{padding:6rem 4rem;max-width:1400px;margin:0 auto}
+.sec-fw{padding:6rem 4rem;max-width:100%}
+.sec-inner{max-width:1400px;margin:0 auto}
+.sec-label{font-family:var(--fh);font-size:.65rem;font-weight:700;letter-spacing:.32em;text-transform:uppercase;color:var(--green);margin-bottom:.9rem}
+.sec-title{font-family:var(--fh);font-size:clamp(1.8rem,4vw,3.2rem);font-weight:800;line-height:1.08;letter-spacing:-.02em;margin-bottom:1.4rem}
+.sec-body{color:var(--gray);line-height:1.82;font-size:1rem;max-width:580px}
+.divider{height:1px;background:var(--border);max-width:1400px;margin:0 auto}
+
+/* WHAT IS BIOCHAR */
+#biochar{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center}
+.b-visual{position:relative;height:420px;display:flex;align-items:center;justify-content:center}
+.b-ring{position:absolute;border-radius:50%;border:1px solid;pointer-events:none}
+.b-r1{width:180px;height:180px;border-color:rgba(0,230,118,.35);animation:rp 3s ease-in-out infinite}
+.b-r2{width:260px;height:260px;border-color:rgba(0,230,118,.18);animation:rp 3s ease-in-out infinite .4s}
+.b-r3{width:340px;height:340px;border-color:rgba(0,230,118,.08);animation:rp 3s ease-in-out infinite .8s}
+.b-r4{width:420px;height:420px;border-color:rgba(0,230,118,.03);animation:rp 3s ease-in-out infinite 1.2s}
+@keyframes rp{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.06);opacity:.6}}
+.b-core{width:110px;height:110px;background:radial-gradient(circle,rgba(0,230,118,.15) 0%,transparent 70%);border-radius:50%;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--green);font-family:var(--fh);font-size:.6rem;font-weight:700;letter-spacing:.12em;color:var(--green);z-index:2;text-align:center;padding:1rem}
+.facts-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:2rem}
+.fact-card{background:rgba(0,230,118,.04);border:1px solid rgba(0,230,118,.1);padding:1.2rem;opacity:0;transform:translateY(20px)}
+.fact-card h4{font-family:var(--fh);font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--green);margin-bottom:.35rem}
+.fact-card p{font-size:.85rem;color:var(--gray);line-height:1.55}
+
+/* ======================== */
+/* FORMATION SCROLLYTELLING */
+/* ======================== */
+#fw{position:relative;height:600vh}
+#fs{position:sticky;top:0;height:100vh;overflow:hidden;display:flex;align-items:center;justify-content:center}
+#fc{position:absolute;inset:0;z-index:0}
+.f-overlay{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;justify-content:space-between;padding:3rem 4rem;pointer-events:none}
+.f-top{text-align:center}
+.f-top .sec-title{margin-bottom:0}
+.f-bottom{display:flex;flex-direction:column;align-items:center;gap:.6rem;text-align:center}
+.stage-num{font-family:var(--fh);font-size:.62rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:rgba(0,230,118,.6)}
+.stage-name{font-family:var(--fh);font-size:clamp(1.5rem,3.5vw,2.8rem);font-weight:800;letter-spacing:-.02em;transition:color .5s}
+.stage-desc{font-size:.9rem;color:var(--gray);max-width:460px;line-height:1.65;transition:all .4s}
+.stage-dots{display:flex;gap:.5rem;justify-content:center;margin-top:.4rem}
+.sdot{width:6px;height:6px;border-radius:50%;background:rgba(0,230,118,.18);border:1px solid rgba(0,230,118,.3);transition:all .4s}
+.sdot.on{background:var(--green);width:18px;border-radius:3px}
+.f-sidebar{position:absolute;right:3rem;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:1.2rem;z-index:11}
+.sb-item{display:flex;align-items:center;gap:.8rem;opacity:.28;transition:opacity .4s}
+.sb-item.on{opacity:1}
+.sb-line{width:18px;height:1px;background:var(--gray);transition:background .4s,width .4s}
+.sb-item.on .sb-line{background:var(--green);width:26px}
+.sb-text{font-family:var(--fh);font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gray);white-space:nowrap}
+.sb-item.on .sb-text{color:var(--white)}
+.f-progress{position:absolute;top:50%;left:2.5rem;transform:translateY(-50%);z-index:11;display:flex;flex-direction:column;align-items:center;gap:0}
+.fp-fill{width:1px;background:var(--green);transition:height .3s;height:0;min-height:0}
+.fp-track{width:1px;background:rgba(255,255,255,.08);height:120px;position:relative;display:flex;flex-direction:column;justify-content:flex-end}
+
+/* PRODUCTS */
+#products{border-top:1px solid var(--border)}
+.prod-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:3rem;flex-wrap:wrap;gap:1.5rem}
+.prod-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:1.2rem}
+.prod-card{background:var(--charcoal);border:1px solid var(--border);padding:2rem;transition:transform .4s,border-color .3s;position:relative;overflow:hidden;opacity:0;transform:translateY(30px)}
+.prod-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--green);transform:scaleX(0);transform-origin:left;transition:transform .4s}
+.prod-card:hover{transform:translateY(-6px);border-color:rgba(0,230,118,.28)}
+.prod-card:hover::before{transform:scaleX(1)}
+.prod-ico{width:46px;height:46px;background:rgba(0,230,118,.09);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:1.2rem}
+.prod-card h3{font-family:var(--fh);font-size:.95rem;font-weight:700;margin-bottom:.5rem}
+.prod-card p{font-size:.82rem;color:var(--gray);line-height:1.62;margin-bottom:1rem}
+.prod-tag{font-family:var(--fh);font-size:.6rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--green)}
+
+/* BENEFITS */
+#benefits{background:var(--charcoal);border-top:1px solid var(--border)}
+.benefits-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:2rem;margin-top:3rem}
+.ben-item{text-align:center;opacity:0;transform:translateY(28px)}
+.ben-num{font-family:var(--fh);font-size:3rem;font-weight:800;color:var(--green);line-height:1;margin-bottom:.4rem}
+.ben-item h4{font-family:var(--fh);font-size:.85rem;font-weight:700;letter-spacing:.04em;margin-bottom:.35rem}
+.ben-item p{font-size:.8rem;color:var(--gray);line-height:1.55}
+
+/* TECHNOLOGY */
+#technology{border-top:1px solid var(--border)}
+.tech-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start;margin-top:3rem}
+.tech-steps{display:flex;flex-direction:column}
+.tstep{display:flex;gap:1.5rem;padding:1.4rem 0;border-bottom:1px solid rgba(255,255,255,.04);opacity:0;transform:translateX(-22px)}
+.tstep:last-child{border-bottom:none}
+.tstep-n{font-family:var(--fh);font-size:2rem;font-weight:800;color:rgba(0,230,118,.12);min-width:44px;line-height:1}
+.tstep-c h4{font-family:var(--fh);font-size:.88rem;font-weight:700;margin-bottom:.38rem}
+.tstep-c p{font-size:.82rem;color:var(--gray);line-height:1.62}
+.tech-vis{background:var(--charcoal);border:1px solid var(--border);padding:2.5rem;min-height:360px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.2rem;text-align:center;position:sticky;top:100px}
+.kiln-wrap{position:relative;width:140px;height:160px;margin:0 auto}
+.kiln-body{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:110px;height:80px;background:linear-gradient(to bottom,rgba(255,100,0,.25),rgba(50,20,0,.4));border:1.5px solid rgba(255,100,0,.5);clip-path:polygon(12% 0%,88% 0%,100% 100%,0% 100%)}
+.kiln-f1{position:absolute;bottom:82px;left:50%;transform:translateX(-50%);width:28px;height:52px;background:linear-gradient(to top,var(--amber),#ff5500,rgba(255,0,0,.4));clip-path:polygon(50% 0%,0% 100%,100% 100%);animation:flick .45s ease-in-out infinite alternate}
+.kiln-f2{position:absolute;bottom:82px;left:calc(50% - 20px);width:18px;height:38px;background:linear-gradient(to top,var(--amber),rgba(255,80,0,.3));clip-path:polygon(50% 0%,0% 100%,100% 100%);animation:flick .6s ease-in-out infinite alternate .1s}
+.kiln-f3{position:absolute;bottom:82px;left:calc(50% + 12px);width:16px;height:30px;background:linear-gradient(to top,rgba(255,180,0,.8),rgba(255,60,0,.3));clip-path:polygon(50% 0%,0% 100%,100% 100%);animation:flick .5s ease-in-out infinite alternate .2s}
+@keyframes flick{from{transform:translateX(-50%) scaleX(1) scaleY(1)}to{transform:translateX(-50%) scaleX(.85) scaleY(.88)}}
+.tech-vis h3{font-family:var(--fh);font-size:1rem;font-weight:700}
+.tech-vis p{font-size:.82rem;color:var(--gray);line-height:1.62;max-width:240px}
+.ktag{font-family:var(--fh);font-size:.6rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--amber)}
+
+/* FARMERS */
+#farmers{background:linear-gradient(160deg,var(--bg) 0%,#091209 100%);border-top:1px solid var(--border)}
+.farm-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-top:3rem}
+.farm-card{background:rgba(0,230,118,.04);border:1px solid rgba(0,230,118,.1);padding:1.8rem;opacity:0;transform:translateY(22px)}
+.farm-ico{font-size:1.8rem;margin-bottom:.9rem}
+.farm-card h3{font-family:var(--fh);font-size:.9rem;font-weight:700;margin-bottom:.45rem}
+.farm-card p{font-size:.82rem;color:var(--gray);line-height:1.62}
+
+/* SUSTAINABILITY */
+#sustainability{background:var(--charcoal);border-top:1px solid var(--border)}
+.sus-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-top:3rem}
+.sus-card{border:1px solid rgba(0,230,118,.1);padding:2rem;position:relative;overflow:hidden;opacity:0;transform:translateY(22px)}
+.sus-card::after{content:'';position:absolute;bottom:-20px;right:-20px;width:100px;height:100px;background:radial-gradient(circle,rgba(0,230,118,.07) 0%,transparent 70%)}
+.sus-n{font-family:var(--fh);font-size:4rem;font-weight:800;color:rgba(0,230,118,.08);line-height:1;margin-bottom:.4rem}
+.sus-card h3{font-family:var(--fh);font-size:.95rem;font-weight:700;margin-bottom:.5rem;color:var(--green)}
+.sus-card p{font-size:.85rem;color:var(--gray);line-height:1.68}
+
+/* ABOUT */
+#about-us{border-top:1px solid var(--border)}
+.about-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:4rem;align-items:start;margin-top:3rem}
+.founder-card{background:var(--charcoal);border:1px solid var(--border);padding:2.5rem;text-align:center;opacity:0;transform:translateY(30px)}
+.founder-av{width:96px;height:96px;background:linear-gradient(135deg,var(--green),#006b33);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--fh);font-size:1.8rem;font-weight:800;color:var(--bg);margin:0 auto 1.5rem}
+.founder-card h3{font-family:var(--fh);font-size:1.25rem;font-weight:700;margin-bottom:.3rem}
+.ftitle{font-family:var(--fh);font-size:.72rem;font-weight:700;letter-spacing:.1em;color:var(--green);margin-bottom:1rem}
+.founder-card p{font-size:.88rem;color:var(--gray);line-height:1.72}
+.mv-stack{display:flex;flex-direction:column;gap:1.2rem;opacity:0;transform:translateY(20px)}
+.mv-card{background:var(--charcoal);border-left:2.5px solid var(--green);padding:1.4rem}
+.mv-card h4{font-family:var(--fh);font-size:.65rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--green);margin-bottom:.5rem}
+.mv-card p{font-size:.88rem;color:var(--gray);line-height:1.72;font-style:italic}
+.mv-card p.normal{font-style:normal}
+
+/* CONTACT */
+#contact{border-top:1px solid var(--border)}
+.con-grid{display:grid;grid-template-columns:1fr 1.6fr;gap:4rem;margin-top:3rem}
+.con-detail{display:flex;gap:1rem;margin-bottom:1.4rem;padding-bottom:1.4rem;border-bottom:1px solid var(--border)}
+.con-detail:last-of-type{border-bottom:none}
+.con-ico{font-size:1.1rem;width:28px;flex-shrink:0;padding-top:.1rem}
+.con-text{font-size:.88rem;color:var(--gray);line-height:1.65}
+.con-text strong{color:var(--white);font-family:var(--fh);font-size:.82rem;letter-spacing:.04em;display:block;margin-bottom:.2rem}
+.con-map{margin-top:1.5rem;border:1px solid var(--border);overflow:hidden}
+.con-form{display:flex;flex-direction:column;gap:.9rem}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
+.fg{display:flex;flex-direction:column;gap:.35rem}
+.fg label{font-family:var(--fh);font-size:.62rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gray)}
+.fg input,.fg textarea,.fg select{background:var(--charcoal);border:1px solid rgba(255,255,255,.1);color:var(--white);padding:.75rem 1rem;font-family:var(--fb);font-size:.88rem;outline:none;transition:border-color .3s;resize:vertical;cursor:none}
+.fg input:focus,.fg textarea:focus,.fg select:focus{border-color:var(--green)}
+.fg select option{background:var(--charcoal)}
+.f-submit{background:var(--green);color:var(--bg);border:none;padding:.95rem 2.2rem;font-family:var(--fh);font-weight:700;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;cursor:none;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));transition:background .3s,transform .2s;align-self:flex-start}
+.f-submit:hover{background:var(--green2);transform:translateY(-2px)}
+.fnote{font-size:.72rem;color:rgba(122,148,128,.6)}
+.fsuccess{display:none;background:rgba(0,230,118,.08);border:1px solid rgba(0,230,118,.25);padding:1rem;color:var(--green);font-family:var(--fh);font-size:.85rem}
+
+/* FOOTER */
+footer{background:rgba(0,0,0,.5);border-top:1px solid var(--border);padding:3rem 4rem}
+.ft-inner{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem}
+.ft-brand .nav-logo{font-size:1.5rem;display:block;margin-bottom:.5rem}
+.ft-brand p{font-size:.82rem;color:var(--gray);line-height:1.65;margin-top:.8rem}
+.ft-col h4{font-family:var(--fh);font-size:.6rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--green);margin-bottom:1rem}
+.ft-col ul{list-style:none;display:flex;flex-direction:column;gap:.55rem}
+.ft-col a{color:var(--gray);text-decoration:none;font-size:.82rem;transition:color .3s}
+.ft-col a:hover{color:var(--white)}
+.ft-bottom{max-width:1400px;margin:2rem auto 0;padding-top:2rem;border-top:1px solid rgba(255,255,255,.04);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.ft-bottom p{font-size:.75rem;color:var(--gray)}
+
+/* WHATSAPP */
+.wa-btn{position:fixed;bottom:2rem;right:2rem;z-index:998;width:52px;height:52px;background:#25d366;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;box-shadow:0 4px 20px rgba(37,211,102,.4);transition:transform .3s,box-shadow .3s;font-size:1.4rem}
+.wa-btn:hover{transform:scale(1.12);box-shadow:0 6px 28px rgba(37,211,102,.6)}
+
+/* REVEAL */
+.rv{opacity:0;transform:translateY(28px)}
+
+/* MOBILE */
+@media(max-width:900px){
+  nav{padding:1rem 1.5rem}
+  .nav-links{display:none}
+  .sec{padding:4rem 1.5rem}
+  .sec-fw{padding:4rem 1.5rem}
+  #biochar{grid-template-columns:1fr;gap:3rem}
+  .tech-grid{grid-template-columns:1fr}
+  .tech-vis{position:relative;top:auto}
+  .farm-grid{grid-template-columns:1fr 1fr}
+  .sus-grid{grid-template-columns:1fr}
+  .about-grid{grid-template-columns:1fr}
+  .con-grid{grid-template-columns:1fr}
+  .frow{grid-template-columns:1fr}
+  .ft-inner{grid-template-columns:1fr 1fr}
+  .f-overlay{padding:2rem 1.5rem}
+  .f-sidebar{display:none}
+  .f-progress{display:none}
+  .hero-badge{display:none}
+  .cursor{display:none}
+}
+@media(max-width:560px){
+  .farm-grid{grid-template-columns:1fr}
+  .ft-inner{grid-template-columns:1fr}
+  .prod-head{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div class="cursor"><div class="cursor-dot" id="cdot"></div><div class="cursor-ring" id="cring"></div></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#hero" class="nav-logo">Biochar<span>X</span></a>
+  <ul class="nav-links">
+    <li><a href="#biochar">Biochar</a></li>
+    <li><a href="#fw">Formation</a></li>
+    <li><a href="#products">Products</a></li>
+    <li><a href="#technology">Technology</a></li>
+    <li><a href="#farmers">Farmers</a></li>
+    <li><a href="#about-us">About</a></li>
+    <li><a href="#contact" class="nav-cta">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ====== HERO ====== -->
+<div id="hero">
+  <canvas id="hero-canvas"></canvas>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Carbon Kinetix Technology · Jalandhar, Punjab</div>
+    <h1 class="hero-title">Revolutionizing Soil Health<br>with <em>Biochar Innovation</em></h1>
+    <p class="hero-sub">Advanced biochar technology for sustainable agriculture and carbon sequestration. Turning biomass waste into a lasting climate solution.</p>
+    <div class="hero-btns">
+      <a href="#products" class="btn btn-p">Explore Products</a>
+      <a href="#contact" class="btn btn-o">Contact Us</a>
+    </div>
+  </div>
+  <div class="hero-badge">
+    <div class="hero-badge-inner">
+      <p>Research & Innovation</p>
+      <span>School of Agriculture · LPU</span>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <span>Scroll to discover</span>
+    <div class="scroll-line"></div>
+  </div>
+</div>
+
+<!-- ====== WHAT IS BIOCHAR ====== -->
+<div class="divider"></div>
+<section class="sec" id="biochar">
+  <div>
+    <div class="sec-label">What Is Biochar</div>
+    <h2 class="sec-title rv">Carbon-rich material<br>from biomass pyrolysis</h2>
+    <p class="sec-body rv">Biochar is produced by heating agricultural biomass in low-oxygen conditions — a process called pyrolysis. The result is a porous, stable, carbon-rich material that transforms crop waste into a powerful tool for soil health, water retention, and long-term carbon capture.</p>
+    <div class="facts-grid">
+      <div class="fact-card"><h4>Soil Fertility</h4><p>Enhances microbial activity and nutrient retention in degraded soils.</p></div>
+      <div class="fact-card"><h4>Carbon Lock-in</h4><p>Sequesters carbon stably for hundreds to thousands of years.</p></div>
+      <div class="fact-card"><h4>Water Retention</h4><p>Porous structure holds moisture, cutting irrigation needs by up to 30%.</p></div>
+      <div class="fact-card"><h4>Crop Yield</h4><p>Field trials show 10–30% yield increase with consistent application.</p></div>
+    </div>
+  </div>
+  <div class="b-visual">
+    <div class="b-ring b-r4"></div>
+    <div class="b-ring b-r3"></div>
+    <div class="b-ring b-r2"></div>
+    <div class="b-ring b-r1"></div>
+    <div class="b-core">BIOCHAR<br>C₆H₂O</div>
+  </div>
+</section>
+
+<!-- ====== FORMATION SCROLLYTELLING ====== -->
+<div class="divider"></div>
+<div id="fw">
+  <div id="fs">
+    <canvas id="fc"></canvas>
+    <div class="f-overlay">
+      <div class="f-top">
+        <div class="sec-label">The Formation Process</div>
+        <h2 class="sec-title">From <em style="font-style:italic;color:var(--green);font-family:var(--fb)">Biomass</em> to Biochar</h2>
+      </div>
+      <div class="f-bottom">
+        <div class="stage-num" id="snum">Stage 01 · 05</div>
+        <div class="stage-name" id="sname">Raw Biomass</div>
+        <div class="stage-desc" id="sdesc">Agricultural waste, wood chips, and crop residue are collected as raw material for the biochar production process.</div>
+        <div class="stage-dots">
+          <div class="sdot on" id="d0"></div>
+          <div class="sdot" id="d1"></div>
+          <div class="sdot" id="d2"></div>
+          <div class="sdot" id="d3"></div>
+          <div class="sdot" id="d4"></div>
+        </div>
+      </div>
+    </div>
+    <div class="f-sidebar">
+      <div class="sb-item on" id="s0"><div class="sb-line"></div><span class="sb-text">Raw Biomass</span></div>
+      <div class="sb-item" id="s1"><div class="sb-line"></div><span class="sb-text">Kiln Loading</span></div>
+      <div class="sb-item" id="s2"><div class="sb-line"></div><span class="sb-text">Pyrolysis</span></div>
+      <div class="sb-item" id="s3"><div class="sb-line"></div><span class="sb-text">Biochar Formed</span></div>
+      <div class="sb-item" id="s4"><div class="sb-line"></div><span class="sb-text">Soil Applied</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== PRODUCTS ====== -->
+<div class="divider"></div>
+<section class="sec" id="products">
+  <div class="prod-head">
+    <div>
+      <div class="sec-label">Our Products</div>
+      <h2 class="sec-title rv">Biochar-based<br>agricultural solutions</h2>
+    </div>
+    <a href="#contact" class="btn btn-o">Enquire Now</a>
+  </div>
+  <div class="prod-grid">
+    <div class="prod-card"><div class="prod-ico">🪨</div><h3>Biochar</h3><p>Pure carbon-rich biochar from agricultural biomass. Ideal for soil amendment and long-term carbon sequestration in any crop type.</p><span class="prod-tag">Soil Amendment</span></div>
+    <div class="prod-card"><div class="prod-ico">⚗️</div><h3>Activated Biochar</h3><p>Steam or chemically activated biochar with enhanced porosity for superior water and nutrient absorption in water-stressed soils.</p><span class="prod-tag">Enhanced Absorption</span></div>
+    <div class="prod-card"><div class="prod-ico">🔬</div><h3>Functional Biochar</h3><p>Biochar enriched with specific minerals and microbes for targeted agricultural applications and remediation of heavy-metal contaminated soils.</p><span class="prod-tag">Precision Agriculture</span></div>
+    <div class="prod-card"><div class="prod-ico">💧</div><h3>Pyrogenic Acid</h3><p>Bio-liquid by-product of pyrolysis rich in organic compounds. Used as a natural pesticide, growth stimulant, and soil conditioner.</p><span class="prod-tag">Bio-Pesticide</span></div>
+    <div class="prod-card"><div class="prod-ico">🌱</div><h3>Soil Conditioner</h3><p>Blended formulation of biochar, compost, and minerals. A complete ready-to-use solution for farm field application across Punjab.</p><span class="prod-tag">Ready-to-Use</span></div>
+  </div>
+</section>
+
+<!-- ====== BENEFITS ====== -->
+<div class="sec-fw" id="benefits">
+  <div class="sec-inner">
+    <div class="sec-label">Proven Impact</div>
+    <h2 class="sec-title rv">Why biochar works</h2>
+    <div class="benefits-grid">
+      <div class="ben-item"><div class="ben-num">10×</div><h4>Water Retention</h4><p>Holds up to 10× its own weight in water, dramatically reducing irrigation requirements.</p></div>
+      <div class="ben-item"><div class="ben-num">30%</div><h4>Crop Yield Increase</h4><p>Average yield improvement across multiple crop types in field trials in Indian conditions.</p></div>
+      <div class="ben-item"><div class="ben-num">1000</div><h4>Years Carbon Stable</h4><p>Once in soil, biochar sequesters carbon for centuries — not decades. Permanent impact.</p></div>
+      <div class="ben-item"><div class="ben-num">40%</div><h4>Emissions Reduction</h4><p>Agricultural GHG emissions cut significantly vs synthetic fertilizer use.</p></div>
+      <div class="ben-item"><div class="ben-num">50%</div><h4>Stubble Utilised</h4><p>Punjab's crop stubble burning problem addressed — waste becomes value.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== TECHNOLOGY ====== -->
+<div class="divider"></div>
+<section class="sec" id="technology">
+  <div class="sec-label">Production Technology</div>
+  <h2 class="sec-title rv">The Kon-Tiki Kiln:<br>Scalable pyrolysis</h2>
+  <div class="tech-grid">
+    <div class="tech-steps">
+      <div class="tstep"><span class="tstep-n">01</span><div class="tstep-c"><h4>Biomass Collection</h4><p>Agricultural residue — rice husks, wheat straw, wood chips, sugarcane bagasse — is collected, dried, and prepared. Punjab's abundant crop waste becomes the raw input.</p></div></div>
+      <div class="tstep"><span class="tstep-n">02</span><div class="tstep-c"><h4>Kon-Tiki Kiln Loading</h4><p>Biomass is loaded into the cone-shaped Kon-Tiki kiln. The conical design creates a natural flame curtain that maintains low-oxygen conditions for pyrolysis without a sealed reactor.</p></div></div>
+      <div class="tstep"><span class="tstep-n">03</span><div class="tstep-c"><h4>Pyrolysis at 400–700°C</h4><p>Biomass is heated in the absence of oxygen. Organic molecules break down — volatile gases escape as syngas while stable carbon chains remain as the biochar matrix.</p></div></div>
+      <div class="tstep"><span class="tstep-n">04</span><div class="tstep-c"><h4>Quenching & Cooling</h4><p>Water is added to quench combustion and cool the biochar. This stops further oxidation and locks in the highly porous micropore structure critical for soil activity.</p></div></div>
+      <div class="tstep"><span class="tstep-n">05</span><div class="tstep-c"><h4>Sieving, Testing & Packaging</h4><p>Biochar is sieved to particle size, tested for pH, carbon content, and surface area, then packaged for direct application or further processing into activated or functional variants.</p></div></div>
+    </div>
+    <div class="tech-vis">
+      <span class="ktag">Kon-Tiki Kiln · Open-Source Design</span>
+      <div class="kiln-wrap">
+        <div class="kiln-f3"></div><div class="kiln-f2"></div><div class="kiln-f1"></div>
+        <div class="kiln-body"></div>
+      </div>
+      <h3>Open-Source Pyrolysis</h3>
+      <p>The Kon-Tiki design democratizes biochar production. Any farmer can build and operate one with minimal investment, producing high-quality biochar from local agricultural waste.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ====== FOR FARMERS ====== -->
+<div class="sec-fw" id="farmers">
+  <div class="sec-inner">
+    <div class="sec-label">For Farmers</div>
+    <h2 class="sec-title rv">Simple steps to<br>transform your soil</h2>
+    <div class="farm-grid">
+      <div class="farm-card"><div class="farm-ico">📏</div><h3>Recommended Dosage</h3><p>Apply 2–5 tonnes per hectare for optimal results. For severely degraded soils, up to 10 t/ha in the first year may be beneficial based on soil test results.</p></div>
+      <div class="farm-card"><div class="farm-ico">🔄</div><h3>Mixing Method</h3><p>Incorporate into the top 15–20cm before sowing. Blend with compost at 1:3 ratio (biochar:compost) for best microbial activation and faster soil response.</p></div>
+      <div class="farm-card"><div class="farm-ico">🌾</div><h3>Crop Applications</h3><p>Effective for wheat, rice, vegetables, and fruit crops. Best applied during land preparation before kharif or rabi season for maximum benefit.</p></div>
+      <div class="farm-card"><div class="farm-ico">💧</div><h3>Reduce Irrigation</h3><p>After biochar application, reduce irrigation frequency by up to 30%. The porous carbon structure retains moisture between waterings, reducing runoff.</p></div>
+      <div class="farm-card"><div class="farm-ico">🧪</div><h3>Soil Testing</h3><p>We recommend a baseline soil test before first application. Our team helps interpret results and customize the biochar blend for your specific soil conditions.</p></div>
+      <div class="farm-card"><div class="farm-ico">📞</div><h3>Expert Consultation</h3><p>Free agronomy consultation for farmers in Punjab and surrounding districts. Contact us for a farm visit and a personalized soil health recommendation.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== SUSTAINABILITY ====== -->
+<div class="sec-fw" id="sustainability">
+  <div class="sec-inner">
+    <div class="sec-label">Sustainability Impact</div>
+    <h2 class="sec-title rv">Climate action through<br>carbon sequestration</h2>
+    <div class="sus-grid">
+      <div class="sus-card"><div class="sus-n">01</div><h3>Carbon Sequestration</h3><p>When biochar enters the soil, the carbon locked within it remains stable for hundreds to thousands of years — directly reducing atmospheric CO₂. Each tonne of biochar applied sequesters approximately 2.2 tonnes of CO₂-equivalent.</p></div>
+      <div class="sus-card"><div class="sus-n">02</div><h3>Greenhouse Gas Reduction</h3><p>Biochar application reduces methane and nitrous oxide emissions from soil by up to 40%, while simultaneously reducing the need for synthetic nitrogen fertilizers that produce GHG through manufacture and application.</p></div>
+      <div class="sus-card"><div class="sus-n">03</div><h3>Stubble Burning Solution</h3><p>Punjab generates over 20 million tonnes of crop stubble annually. Instead of burning it — causing severe respiratory health crises and air pollution — biochar production converts this waste into a long-term climate asset.</p></div>
+      <div class="sus-card"><div class="sus-n">04</div><h3>Carbon Credits (Coming 2025–26)</h3><p>We are developing systems to help farmers using BiocharX products participate in voluntary carbon credit markets. Verified carbon removals can generate direct income, making sustainable farming financially rewarding.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== ABOUT ====== -->
+<div class="divider"></div>
+<section class="sec" id="about-us">
+  <div class="sec-label">About Us</div>
+  <h2 class="sec-title rv">Research-driven<br>climate innovation</h2>
+  <div class="about-grid">
+    <div class="founder-card">
+      <div class="founder-av">GS</div>
+      <h3>Dr. Gaurav Sharma</h3>
+      <div class="ftitle">Founder · Carbon Kinetix Technology</div>
+      <p>Dr. Gaurav Sharma is a researcher and innovator from the School of Agriculture at Lovely Professional University, Jalandhar. His work focuses on biochar production technology, carbon sequestration strategies, and developing practical solutions for smallholder farmers across Punjab and the broader Indo-Gangetic Plain. His research combines laboratory science with field-level impact, bridging agronomy and climate technology.</p>
+    </div>
+    <div class="mv-stack">
+      <div class="mv-card"><h4>Vision</h4><p>"To advance sustainable agriculture through innovative biochar technologies that restore soil health and contribute to a net-zero climate future."</p></div>
+      <div class="mv-card"><h4>Mission</h4><p>"Develop scalable carbon sequestration solutions using biochar production and research, making them accessible and economically viable for farmers across India."</p></div>
+      <div class="mv-card"><h4>Research Focus</h4><p class="normal">Our R&D spans biochar characterization, Kon-Tiki kiln optimization, activated biochar production, pyrogenic acid extraction, and field trials across diverse soil types in Punjab. We collaborate with LPU's School of Agriculture and partner institutions for rigorous scientific validation.</p></div>
+      <div class="mv-card"><h4>Future Roadmap</h4><p class="normal">E-commerce for direct farmer purchases, a farmer network platform for knowledge exchange, and integration with voluntary carbon credit markets by 2026.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== CONTACT ====== -->
+<div class="divider"></div>
+<section class="sec" id="contact">
+  <div class="sec-label">Get In Touch</div>
+  <h2 class="sec-title rv">Partner with BiocharX</h2>
+  <div class="con-grid">
+    <div>
+      <div class="con-detail">
+        <span class="con-ico">📍</span>
+        <div class="con-text">
+          <strong>Address</strong>
+          Carbon Kinetix Technology (BiocharX)<br>
+          City Enclave, Dakoha, Rama Mandi<br>
+          Jalandhar, Punjab – 144005, India
+        </div>
+      </div>
+      <div class="con-detail">
+        <span class="con-ico">🏫</span>
+        <div class="con-text"><strong>Research Base</strong>School of Agriculture, Lovely Professional University<br>Phagwara – Jalandhar Highway, Punjab</div>
+      </div>
+      <div class="con-detail">
+        <span class="con-ico">📧</span>
+        <div class="con-text"><strong>Email</strong>info@biocharx.in</div>
+      </div>
+      <div class="con-detail">
+        <span class="con-ico">📞</span>
+        <div class="con-text"><strong>Phone / WhatsApp</strong>+91 81684 25508</div>
+      </div>
+      <div class="con-detail">
+        <span class="con-ico">🌐</span>
+        <div class="con-text"><strong>Website</strong>biocharx.com · biocharx.in (coming soon)</div>
+      </div>
+      <div style="margin-top:1.5rem">
+        <a href="https://wa.me/918168425508" target="_blank" class="btn btn-p" style="cursor:pointer">💬 WhatsApp Us</a>
+      </div>
+      <div class="con-map">
+        <iframe src="https://maps.google.com/maps?q=31.3082522,75.6413796&z=16&output=embed" width="100%" height="200" style="border:0;display:block;filter:grayscale(1) invert(0.85) sepia(0.2) hue-rotate(100deg) opacity(.75)" allowfullscreen="" loading="lazy"></iframe>
+      </div>
+    </div>
+    <form class="con-form" id="cform">
+      <div class="frow">
+        <div class="fg"><label>Full Name *</label><input type="text" name="name" placeholder="Your full name" required></div>
+        <div class="fg"><label>Phone Number *</label><input type="tel" name="phone" placeholder="+91 XXXXX XXXXX" required></div>
+      </div>
+      <div class="frow">
+        <div class="fg"><label>Email Address</label><input type="email" name="email" placeholder="your@email.com"></div>
+        <div class="fg"><label>City / District</label><input type="text" name="location" placeholder="e.g. Jalandhar, Punjab"></div>
+      </div>
+      <div class="frow">
+        <div class="fg"><label>Farm Size (acres)</label><input type="text" name="farm" placeholder="e.g. 5 acres"></div>
+        <div class="fg"><label>Primary Crop</label><input type="text" name="crop" placeholder="e.g. Wheat, Rice, Vegetables"></div>
+      </div>
+      <div class="fg">
+        <label>Inquiry Type</label>
+        <select name="type">
+          <option value="">Select inquiry type</option>
+          <option>Product Purchase</option>
+          <option>Farm Consultation</option>
+          <option>Research Partnership</option>
+          <option>Bulk / Wholesale Order</option>
+          <option>Carbon Credits Program</option>
+          <option>Media / Press</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label>Message</label>
+        <textarea name="message" rows="4" placeholder="Tell us about your farm, soil condition, crop type, or what you need from BiocharX..."></textarea>
+      </div>
+      <button type="submit" class="f-submit">Send Inquiry →</button>
+      <p class="fnote">We respond within 24 hours. Your information is never shared with third parties.</p>
+      <div class="fsuccess" id="fsuccess">✅ Your inquiry has been received! We'll contact you within 24 hours.</div>
+    </form>
+  </div>
+</section>
+
+<!-- ====== FOOTER ====== -->
+<footer>
+  <div class="ft-inner">
+    <div class="ft-brand">
+      <a href="#hero" class="nav-logo">Biochar<span>X</span></a>
+      <p>Carbon Kinetix Technology<br>Advancing sustainable agriculture through biochar innovation and carbon sequestration research from Jalandhar, Punjab.</p>
+    </div>
+    <div class="ft-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#about-us">About Us</a></li>
+        <li><a href="#technology">Technology</a></li>
+        <li><a href="#sustainability">Sustainability</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+    <div class="ft-col">
+      <h4>Products</h4>
+      <ul>
+        <li><a href="#products">Biochar</a></li>
+        <li><a href="#products">Activated Biochar</a></li>
+        <li><a href="#products">Pyrogenic Acid</a></li>
+        <li><a href="#products">Soil Conditioner</a></li>
+      </ul>
+    </div>
+    <div class="ft-col">
+      <h4>Resources</h4>
+      <ul>
+        <li><a href="#farmers">For Farmers</a></li>
+        <li><a href="#biochar">What is Biochar</a></li>
+        <li><a href="#fw">How It's Made</a></li>
+        <li><a href="#contact">Partner With Us</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="ft-bottom">
+    <p>© 2025 Carbon Kinetix Technology · BiocharX. All rights reserved.</p>
+    <p style="color:rgba(122,148,128,.45)">Jalandhar, Punjab 144005, India</p>
+  </div>
+</footer>
+
+<!-- WhatsApp -->
+<a href="https://wa.me/918168425508" target="_blank" class="wa-btn" title="Chat on WhatsApp">💬</a>
+
+<script>
+// ============================================================
+// CUSTOM CURSOR
+// ============================================================
+const cdot = document.getElementById('cdot');
+const cring = document.getElementById('cring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cdot.style.left=mx+'px';cdot.style.top=my+'px'});
+(function animCursor(){requestAnimationFrame(animCursor);rx+=(mx-rx)*.12;ry+=(my-ry)*.12;cring.style.left=rx+'px';cring.style.top=ry+'px'})();
+document.querySelectorAll('a,button,.prod-card').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cring.style.width='52px';cring.style.height='52px';cring.style.opacity='.4'});
+  el.addEventListener('mouseleave',()=>{cring.style.width='32px';cring.style.height='32px';cring.style.opacity='1'});
+});
+
+// ============================================================
+// GSAP
+// ============================================================
+gsap.registerPlugin(ScrollTrigger);
+
+// Nav
+ScrollTrigger.create({start:'top -60',onUpdate:s=>{
+  if(s.progress>0)document.getElementById('nav').classList.add('scrolled');
+  else document.getElementById('nav').classList.remove('scrolled');
+}});
+
+// Hero entrance
+const htl = gsap.timeline({delay:.2});
+htl.to('.hero-eyebrow',{opacity:1,y:0,duration:.8,ease:'power3.out'})
+   .to('.hero-title',{opacity:1,y:0,duration:.9,ease:'power3.out'},'-.5')
+   .to('.hero-sub',{opacity:1,y:0,duration:.8,ease:'power3.out'},'-.55')
+   .to('.hero-btns',{opacity:1,y:0,duration:.7,ease:'power3.out'},'-.5')
+   .to('.hero-badge',{opacity:1,duration:.6,ease:'power3.out'},'-.3');
+
+// Reveal
+document.querySelectorAll('.rv').forEach(el=>gsap.to(el,{scrollTrigger:{trigger:el,start:'top 86%'},opacity:1,y:0,duration:.9,ease:'power3.out'}));
+document.querySelectorAll('.fact-card').forEach((el,i)=>gsap.to(el,{scrollTrigger:{trigger:el,start:'top 88%'},opacity:1,y:0,duration:.7,ease:'power3.out',delay:i*.1}));
+document.querySelectorAll('.prod-card').forEach((el,i)=>gsap.to(el,{scrollTrigger:{trigger:el,start:'top 90%'},opacity:1,y:0,duration:.6,ease:'power3.out',delay:i*.08}));
+document.querySelectorAll('.ben-item').forEach((el,i)=>gsap.to(el,{scrollTrigger:{trigger:el,start:'top 87%'},opacity:1,y:0,duration:.7,ease:'power3.out',delay:i*.1}));
+document.querySelectorAll('.tstep').forEach((el,i)=>gsap.to(el,{scrollTrigger:{trigger:el,start:'top 86%'},opacity:1,x:0,duration:.7,ease:'power3.out',delay:i*.1}));
+document.querySelectorAll('.farm-card').forEach((el,i)=>gsap.to(el,{scrollTrigger:{trigger:el,start:'top 88%'},opacity:1,y:0,duration:.6,ease:'power3.out',delay:i*.07}));
+document.querySelectorAll('.sus-card').forEach((el,i)=>gsap.to(el,{scrollTrigger:{trigger:el,start:'top 88%'},opacity:1,y:0,duration:.7,ease:'power3.out',delay:i*.1}));
+document.querySelectorAll('.founder-card').forEach(el=>gsap.to(el,{scrollTrigger:{trigger:el,start:'top 85%'},opacity:1,y:0,duration:.9,ease:'power3.out'}));
+document.querySelectorAll('.mv-stack').forEach(el=>gsap.to(el,{scrollTrigger:{trigger:el,start:'top 85%'},opacity:1,y:0,duration:.9,ease:'power3.out'}));
+
+// ============================================================
+// HERO THREE.JS — floating biochar particles
+// ============================================================
+(function(){
+  const canvas=document.getElementById('hero-canvas');
+  const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  renderer.setSize(innerWidth,innerHeight);
+  const scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(65,innerWidth/innerHeight,.1,1000);
+  camera.position.z=55;
+
+  const N=2000;
+  const geo=new THREE.BufferGeometry();
+  const pos=new Float32Array(N*3);
+  const col=new Float32Array(N*3);
+  const speeds=new Float32Array(N);
+  for(let i=0;i<N;i++){
+    pos[i*3]=(Math.random()-.5)*130;
+    pos[i*3+1]=(Math.random()-.5)*85;
+    pos[i*3+2]=(Math.random()-.5)*65;
+    speeds[i]=.2+Math.random()*.8;
+    const t=Math.random();
+    if(t<.4){col[i*3]=0;col[i*3+1]=.55+Math.random()*.3;col[i*3+2]=.25+Math.random()*.2}
+    else if(t<.7){col[i*3]=.12;col[i*3+1]=.12;col[i*3+2]=.12}
+    else{col[i*3]=.7+Math.random()*.3;col[i*3+1]=.45+Math.random()*.2;col[i*3+2]=0}
+  }
+  geo.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  geo.setAttribute('color',new THREE.BufferAttribute(col,3));
+  const mat=new THREE.PointsMaterial({size:.35,vertexColors:true,transparent:true,opacity:.65});
+  const pts=new THREE.Points(geo,mat);
+  scene.add(pts);
+
+  let mox=0,moy=0;
+  document.addEventListener('mousemove',e=>{mox=(e.clientX/innerWidth-.5)*.4;moy=-(e.clientY/innerHeight-.5)*.4});
+  window.addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+
+  (function loop(){
+    requestAnimationFrame(loop);
+    const t=Date.now()*.0002;
+    pts.rotation.y=t*.08+mox;
+    pts.rotation.x=t*.04+moy;
+    renderer.render(scene,camera);
+  })();
+})();
+
+// ============================================================
+// FORMATION THREE.JS — scrollytelling
+// ============================================================
+(function(){
+  const canvas=document.getElementById('fc');
+  const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+
+  const scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(60,1,.1,1000);
+  camera.position.set(0,0,42);
+
+  function resize(){
+    const w=canvas.parentElement.clientWidth||innerWidth;
+    const h=canvas.parentElement.clientHeight||innerHeight;
+    renderer.setSize(w,h);
+    camera.aspect=w/h;
+    camera.updateProjectionMatrix();
+  }
+  resize();
+  window.addEventListener('resize',resize);
+
+  const N=3000;
+  const geo=new THREE.BufferGeometry();
+  const pArr=new Float32Array(N*3);
+  const cArr=new Float32Array(N*3);
+
+  // Stage definitions
+  const STAGES=[
+    {
+      num:'Stage 01 · 05',name:'Raw Biomass',
+      desc:'Agricultural waste — wheat straw, rice husks, wood chips — collected as raw material. Nature\'s carbon store, ready to be transformed.',
+      rgb:[.82,.48,.1],
+      build:()=>{
+        const a=new Float32Array(N*3);
+        for(let i=0;i<N;i++){
+          const r=6+Math.random()*11;
+          const th=Math.random()*Math.PI*2;
+          const ph=Math.acos(2*Math.random()-1);
+          a[i*3]=r*Math.sin(ph)*Math.cos(th)+(Math.random()-.5)*3.5;
+          a[i*3+1]=r*Math.sin(ph)*Math.sin(th)+(Math.random()-.5)*3.5;
+          a[i*3+2]=r*Math.cos(ph)+(Math.random()-.5)*3;
+        }
+        return a;
+      }
+    },{
+      num:'Stage 02 · 05',name:'Kon-Tiki Kiln Loading',
+      desc:'Biomass is loaded into the cone-shaped Kon-Tiki kiln. The unique geometry creates a self-sustaining flame curtain for low-oxygen pyrolysis.',
+      rgb:[.9,.38,.04],
+      build:()=>{
+        const a=new Float32Array(N*3);
+        for(let i=0;i<N;i++){
+          const h=Math.pow(Math.random(),1.2);
+          const r=h*11+Math.random()*1.5;
+          const th=Math.random()*Math.PI*2;
+          a[i*3]=r*Math.cos(th)+(Math.random()-.5)*.8;
+          a[i*3+1]=h*16-8+(Math.random()-.5)*.9;
+          a[i*3+2]=r*Math.sin(th)+(Math.random()-.5)*.8;
+        }
+        return a;
+      }
+    },{
+      num:'Stage 03 · 05',name:'Pyrolysis — 400–700°C',
+      desc:'Heated without oxygen, organic molecules shatter. Volatile gases escape. A glowing vortex of energy marks the transformation from biomass to carbon.',
+      rgb:[1.0,.18,.0],
+      build:()=>{
+        const a=new Float32Array(N*3);
+        for(let i=0;i<N;i++){
+          const t=i/N;
+          const angle=t*Math.PI*22+Math.random()*.5;
+          const radius=(1-Math.pow(t,.7))*11+Math.random()*2.5;
+          const y=t*22-11+(Math.random()-.5)*2;
+          a[i*3]=radius*Math.cos(angle)+(Math.random()-.5)*.8;
+          a[i*3+1]=y;
+          a[i*3+2]=radius*Math.sin(angle)+(Math.random()-.5)*.8;
+        }
+        return a;
+      }
+    },{
+      num:'Stage 04 · 05',name:'Biochar Formed',
+      desc:'Pure, stable carbon structure emerges — dark, porous, and extraordinarily durable. The micropore network is what gives biochar its transformative power.',
+      rgb:[.1,.12,.1],
+      build:()=>{
+        const a=new Float32Array(N*3);
+        const centers=[];
+        for(let c=0;c<10;c++)centers.push([(Math.random()-.5)*18,(Math.random()-.5)*11,(Math.random()-.5)*9]);
+        for(let i=0;i<N;i++){
+          const c=centers[Math.floor(Math.random()*centers.length)];
+          a[i*3]=c[0]+(Math.random()-.5)*4;
+          a[i*3+1]=c[1]+(Math.random()-.5)*3.2;
+          a[i*3+2]=c[2]+(Math.random()-.5)*3;
+        }
+        return a;
+      }
+    },{
+      num:'Stage 05 · 05',name:'Applied to Soil',
+      desc:'Biochar is worked into farmland soil. Carbon locks underground for centuries. Soil fertility, water retention, and crop yield all increase. The carbon cycle is closed.',
+      rgb:[0,.88,.44],
+      build:()=>{
+        const a=new Float32Array(N*3);
+        for(let i=0;i<N;i++){
+          if(i<N*.65){
+            a[i*3]=(Math.random()-.5)*38;
+            a[i*3+1]=(Math.random()-.5)*2.5-4;
+            a[i*3+2]=(Math.random()-.5)*18;
+          } else {
+            a[i*3]=(Math.random()-.5)*32;
+            a[i*3+1]=Math.random()*14-4;
+            a[i*3+2]=(Math.random()-.5)*14;
+          }
+        }
+        return a;
+      }
+    }
+  ];
+
+  const allPos=STAGES.map(s=>s.build());
+
+  // Init
+  for(let i=0;i<N*3;i++)pArr[i]=allPos[0][i];
+  const [r0,g0,b0]=STAGES[0].rgb;
+  for(let i=0;i<N;i++){cArr[i*3]=r0+(Math.random()-.5)*.15;cArr[i*3+1]=g0+(Math.random()-.5)*.15;cArr[i*3+2]=b0+(Math.random()-.5)*.1}
+
+  geo.setAttribute('position',new THREE.BufferAttribute(pArr,3));
+  geo.setAttribute('color',new THREE.BufferAttribute(cArr,3));
+  const mat=new THREE.PointsMaterial({size:.22,vertexColors:true,transparent:true,opacity:.9,sizeAttenuation:true});
+  const pts=new THREE.Points(geo,mat);
+  scene.add(pts);
+
+  let curStage=0;
+  let fromPos=new Float32Array(pArr);
+  let toPos=allPos[0];
+  let fromRGB=STAGES[0].rgb.slice();
+  let toRGB=STAGES[0].rgb.slice();
+  let tp=1;
+
+  function goStage(idx){
+    if(idx===curStage)return;
+    fromPos=new Float32Array(geo.attributes.position.array);
+    fromRGB=STAGES[curStage].rgb.slice();
+    curStage=idx;
+    toPos=allPos[idx];
+    toRGB=STAGES[idx].rgb.slice();
+    tp=0;
+
+    // UI
+    document.getElementById('snum').textContent=STAGES[idx].num;
+    document.getElementById('sname').textContent=STAGES[idx].name;
+    document.getElementById('sdesc').textContent=STAGES[idx].desc;
+    for(let i=0;i<5;i++){
+      document.getElementById('d'+i).classList.toggle('on',i===idx);
+      document.getElementById('s'+i).classList.toggle('on',i===idx);
+    }
+  }
+
+  ScrollTrigger.create({
+    trigger:'#fw',start:'top top',end:'bottom bottom',scrub:.3,
+    onUpdate:self=>{
+      const idx=Math.min(4,Math.floor(self.progress*5));
+      goStage(idx);
+    }
+  });
+
+  let t2=0;
+  (function loop(){
+    requestAnimationFrame(loop);
+    t2+=.005;
+
+    if(tp<1){
+      tp=Math.min(1,tp+.028);
+      const e=tp<.5?2*tp*tp:-1+(4-2*tp)*tp;
+      const pa=geo.attributes.position.array;
+      const ca=geo.attributes.color.array;
+      for(let i=0;i<N;i++){
+        pa[i*3]=fromPos[i*3]+(toPos[i*3]-fromPos[i*3])*e;
+        pa[i*3+1]=fromPos[i*3+1]+(toPos[i*3+1]-fromPos[i*3+1])*e;
+        pa[i*3+2]=fromPos[i*3+2]+(toPos[i*3+2]-fromPos[i*3+2])*e;
+        const nr=fromRGB[0]+(toRGB[0]-fromRGB[0])*e;
+        const ng=fromRGB[1]+(toRGB[1]-fromRGB[1])*e;
+        const nb=fromRGB[2]+(toRGB[2]-fromRGB[2])*e;
+        ca[i*3]=Math.max(0,Math.min(1,nr+(Math.random()-.5)*.06));
+        ca[i*3+1]=Math.max(0,Math.min(1,ng+(Math.random()-.5)*.06));
+        ca[i*3+2]=Math.max(0,Math.min(1,nb+(Math.random()-.5)*.04));
+      }
+      geo.attributes.position.needsUpdate=true;
+      geo.attributes.color.needsUpdate=true;
+    }
+
+    pts.rotation.y+=.0035;
+    if(curStage===2)pts.rotation.y+=.006; // spin faster during pyrolysis
+    renderer.render(scene,camera);
+  })();
+})();
+
+// ============================================================
+// CONTACT FORM
+// ============================================================
+document.getElementById('cform').addEventListener('submit',function(e){
+  e.preventDefault();
+  const btn=this.querySelector('.f-submit');
+  btn.textContent='Sending...';btn.disabled=true;
+  setTimeout(()=>{
+    btn.style.display='none';
+    document.getElementById('fsuccess').style.display='block';
+  },1000);
+});
+
+// ============================================================
+// SMOOTH SCROLL
+// ============================================================
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',function(e){
+    const t=document.querySelector(this.getAttribute('href'));
+    if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'})}
+  });
+});
+</script>
+</body>
+</html>
